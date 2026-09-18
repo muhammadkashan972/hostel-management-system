@@ -1,0 +1,6 @@
+{
+  "name": "Hostel Management System",
+  "description": "A comprehensive, responsive Hostel Management System with Admin & Student portals, room allocation, fee management, complaints, and visitor logs.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

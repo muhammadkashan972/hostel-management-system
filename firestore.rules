@@ -1,0 +1,97 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function getUserData() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        getUserData().role == 'admin' ||
+        request.auth.token.email == 'admin@hostel.com' ||
+        request.auth.token.email == 'kashangillmuhammad@gmail.com'
+      );
+    }
+
+    function isStudent() {
+      return isSignedIn() && getUserData().role == 'student';
+    }
+
+    function isOwner(studentId) {
+      return isSignedIn() && (
+        getUserData().studentId == studentId ||
+        request.auth.uid == studentId
+      );
+    }
+
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Users Collection
+    match /users/{userId} {
+      allow read: if isSignedIn() && (request.auth.uid == userId || isAdmin());
+      allow create: if isSignedIn() && request.auth.uid == userId;
+      allow update: if isSignedIn() && (request.auth.uid == userId || isAdmin());
+      allow delete: if isAdmin();
+    }
+
+    // Students Collection
+    match /students/{studentDocId} {
+      allow read: if isSignedIn() && (isAdmin() || resource.data.email == request.auth.token.email || resource.data.uid == request.auth.uid || resource.data.studentId == getUserData().studentId);
+      allow create, update, delete: if isAdmin();
+    }
+
+    // Rooms Collection
+    match /rooms/{roomDocId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    // Allocations Collection
+    match /allocations/{allocationDocId} {
+      allow read: if isSignedIn() && (isAdmin() || resource.data.studentId == getUserData().studentId);
+      allow write: if isAdmin();
+    }
+
+    // Fees Collection
+    match /fees/{feeDocId} {
+      allow read: if isSignedIn() && (isAdmin() || resource.data.studentId == getUserData().studentId);
+      allow write: if isAdmin();
+    }
+
+    // Complaints Collection
+    match /complaints/{complaintDocId} {
+      allow read: if isSignedIn() && (isAdmin() || resource.data.studentId == getUserData().studentId);
+      allow create: if isSignedIn() && (isAdmin() || request.resource.data.studentId == getUserData().studentId);
+      allow update: if isSignedIn() && (isAdmin() || resource.data.studentId == getUserData().studentId);
+      allow delete: if isAdmin();
+    }
+
+    // Notices Collection
+    match /notices/{noticeDocId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    // Settings Collection
+    match /settings/{settingDocId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    // Visitors Collection
+    match /visitors/{visitorDocId} {
+      allow read: if isSignedIn() && (isAdmin() || resource.data.studentId == getUserData().studentId);
+      allow create: if isSignedIn() && (isAdmin() || request.resource.data.studentId == getUserData().studentId);
+      allow update, delete: if isAdmin();
+    }
+  }
+}

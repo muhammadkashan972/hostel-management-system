@@ -1,0 +1,198 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User authentication profile with role designation",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string", "format": "email" },
+        "displayName": { "type": "string", "maxLength": 100 },
+        "role": { "type": "string", "enum": ["admin", "student"] },
+        "studentId": { "type": "string", "maxLength": 50 },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["email", "role"]
+    },
+    "Student": {
+      "title": "Student",
+      "description": "Detailed student record for hostel enrollment",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "studentId": { "type": "string", "maxLength": 50 },
+        "fullName": { "type": "string", "maxLength": 100 },
+        "email": { "type": "string", "format": "email" },
+        "phone": { "type": "string", "maxLength": 20 },
+        "course": { "type": "string", "maxLength": 100 },
+        "branch": { "type": "string", "maxLength": 100 },
+        "year": { "type": "string", "maxLength": 20 },
+        "roomNumber": { "type": "string", "maxLength": 20 },
+        "bedNumber": { "type": "string", "maxLength": 10 },
+        "guardianName": { "type": "string", "maxLength": 100 },
+        "guardianPhone": { "type": "string", "maxLength": 20 },
+        "address": { "type": "string", "maxLength": 250 },
+        "status": { "type": "string", "enum": ["Active", "Inactive", "Vacated"] },
+        "admissionDate": { "type": "string" }
+      },
+      "required": ["studentId", "fullName", "email", "phone"]
+    },
+    "Room": {
+      "title": "Room",
+      "description": "Hostel room specifications and live occupancy",
+      "type": "object",
+      "properties": {
+        "roomNumber": { "type": "string", "maxLength": 20 },
+        "floor": { "type": "string", "maxLength": 20 },
+        "block": { "type": "string", "maxLength": 50 },
+        "type": { "type": "string", "enum": ["Single", "Double", "Triple", "Four-Bed"] },
+        "capacity": { "type": "number" },
+        "currentOccupants": { "type": "number" },
+        "availableBeds": { "type": "number" },
+        "feePerSemester": { "type": "number" },
+        "status": { "type": "string", "enum": ["Available", "Full", "Maintenance"] }
+      },
+      "required": ["roomNumber", "type", "capacity", "status"]
+    },
+    "Allocation": {
+      "title": "Allocation",
+      "description": "Record of student assignment to room and bed",
+      "type": "object",
+      "properties": {
+        "studentId": { "type": "string", "maxLength": 50 },
+        "studentName": { "type": "string", "maxLength": 100 },
+        "roomId": { "type": "string" },
+        "roomNumber": { "type": "string", "maxLength": 20 },
+        "bedNumber": { "type": "string", "maxLength": 10 },
+        "allocatedDate": { "type": "string" },
+        "status": { "type": "string", "enum": ["Active", "Relocated", "Cancelled"] },
+        "remarks": { "type": "string", "maxLength": 250 }
+      },
+      "required": ["studentId", "roomId", "roomNumber", "allocatedDate", "status"]
+    },
+    "Fee": {
+      "title": "Fee",
+      "description": "Hostel fee invoices and payment records",
+      "type": "object",
+      "properties": {
+        "studentId": { "type": "string", "maxLength": 50 },
+        "studentName": { "type": "string", "maxLength": 100 },
+        "roomNumber": { "type": "string", "maxLength": 20 },
+        "amount": { "type": "number" },
+        "semester": { "type": "string", "maxLength": 50 },
+        "dueDate": { "type": "string" },
+        "paymentDate": { "type": "string" },
+        "paymentMethod": { "type": "string", "maxLength": 50 },
+        "transactionId": { "type": "string", "maxLength": 100 },
+        "status": { "type": "string", "enum": ["Paid", "Pending", "Overdue"] },
+        "invoiceNumber": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["studentId", "amount", "status", "dueDate"]
+    },
+    "Attendance": {
+      "title": "Attendance",
+      "description": "Daily student presence logging",
+      "type": "object",
+      "properties": {
+        "date": { "type": "string" },
+        "studentId": { "type": "string", "maxLength": 50 },
+        "studentName": { "type": "string", "maxLength": 100 },
+        "roomNumber": { "type": "string", "maxLength": 20 },
+        "status": { "type": "string", "enum": ["Present", "Absent", "Leave"] },
+        "remarks": { "type": "string", "maxLength": 200 },
+        "markedBy": { "type": "string", "maxLength": 100 }
+      },
+      "required": ["date", "studentId", "status"]
+    },
+    "Complaint": {
+      "title": "Complaint",
+      "description": "Student grievances, maintenance issues, and resolutions",
+      "type": "object",
+      "properties": {
+        "studentId": { "type": "string", "maxLength": 50 },
+        "studentName": { "type": "string", "maxLength": 100 },
+        "roomNumber": { "type": "string", "maxLength": 20 },
+        "category": { "type": "string", "enum": ["Plumbing", "Electrical", "Carpentry", "Wi-Fi & Network", "Cleanliness", "Discipline", "Other"] },
+        "title": { "type": "string", "maxLength": 150 },
+        "description": { "type": "string", "maxLength": 1000 },
+        "priority": { "type": "string", "enum": ["Low", "Medium", "High", "Urgent"] },
+        "status": { "type": "string", "enum": ["Pending", "In Progress", "Resolved", "Closed"] },
+        "adminRemarks": { "type": "string", "maxLength": 500 },
+        "createdAt": { "type": "string" },
+        "resolvedAt": { "type": "string" }
+      },
+      "required": ["studentId", "category", "title", "description", "status"]
+    },
+    "Notice": {
+      "title": "Notice",
+      "description": "Administrative announcements and hostel alerts",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "maxLength": 150 },
+        "content": { "type": "string", "maxLength": 2000 },
+        "category": { "type": "string", "enum": ["Maintenance", "Mess & Dining", "Rules & Discipline", "Holiday / Leave", "General"] },
+        "priority": { "type": "string", "enum": ["Normal", "Important", "Urgent"] },
+        "publishedBy": { "type": "string", "maxLength": 100 },
+        "createdAt": { "type": "string" },
+        "targetAudience": { "type": "string", "enum": ["All Students", "Freshers", "Seniors", "Staff"] }
+      },
+      "required": ["title", "content", "category", "priority"]
+    },
+    "Visitor": {
+      "title": "Visitor",
+      "description": "Hostel gate logs and guest visits",
+      "type": "object",
+      "properties": {
+        "studentId": { "type": "string", "maxLength": 50 },
+        "studentName": { "type": "string", "maxLength": 100 },
+        "roomNumber": { "type": "string", "maxLength": 20 },
+        "visitorName": { "type": "string", "maxLength": 100 },
+        "relationship": { "type": "string", "maxLength": 50 },
+        "contactNumber": { "type": "string", "maxLength": 20 },
+        "visitDate": { "type": "string" },
+        "entryTime": { "type": "string" },
+        "exitTime": { "type": "string" },
+        "status": { "type": "string", "enum": ["In Campus", "Checked Out"] },
+        "purpose": { "type": "string", "maxLength": 250 }
+      },
+      "required": ["studentId", "visitorName", "visitDate", "entryTime", "status"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "Hostel users authentication and access role profile"
+    },
+    "/students/{studentDocId}": {
+      "schema": "Student",
+      "description": "Student master records"
+    },
+    "/rooms/{roomDocId}": {
+      "schema": "Room",
+      "description": "Room records and capacity metrics"
+    },
+    "/allocations/{allocationDocId}": {
+      "schema": "Allocation",
+      "description": "Student bed and room allocation history"
+    },
+    "/fees/{feeDocId}": {
+      "schema": "Fee",
+      "description": "Fee records and payments"
+    },
+    "/attendance/{attendanceDocId}": {
+      "schema": "Attendance",
+      "description": "Student daily attendance"
+    },
+    "/complaints/{complaintDocId}": {
+      "schema": "Complaint",
+      "description": "Hostel maintenance complaints"
+    },
+    "/notices/{noticeDocId}": {
+      "schema": "Notice",
+      "description": "Hostel wide notices and circulars"
+    },
+    "/visitors/{visitorDocId}": {
+      "schema": "Visitor",
+      "description": "Gate entry and visitor logs"
+    }
+  }
+}
